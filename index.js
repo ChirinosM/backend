@@ -11,7 +11,7 @@ app.use(express.json());
 const pool = mysql.createPool({
     host: 'localhost',
     user: 'root',
-    password: 'root', // Asegúrate de que esta sea la contraseña correcta
+    password: '', // Asegúrate de que esta sea la contraseña correcta
     database: 'BD_CENTURION_PRUEBAS',
 });
 
@@ -20,16 +20,17 @@ const promisePool = pool.promise();
 
 // Ruta POST para la autenticación de sesión
 app.post('/sesion', async (req, res) => {
-    const { user, password } = req.body;
-    console.log('Datos recibidos:', { user, password });
+    const { usuario, password } = req.body;
+    console.log('Datos recibidos:', { usuario, password });
 
     try {
         const [rows] = await promisePool.query(
-            'SELECT * FROM USUARIOS WHERE EMAIL = ? AND PASSWORD = ""',
-            [user]
+            'SELECT * FROM USUARIOS WHERE EMAIL = ?',
+            [usuario]
         );
 
         if (rows.length > 0) {
+            res.status(200).send('Usuario ingresado');
             // res.redirect(/perfil?usuario=${user}&autenticado=true);
         } else {
             res.status(401).send('Usuario o contraseña incorrectos');
@@ -45,6 +46,6 @@ app.post('/sesion', async (req, res) => {
 
 
 // Iniciar el servidor Express
-app.listen(3001, () => {
-    console.log('Corriendo express en el puerto 3001');
+app.listen(3010, () => {
+    console.log('Corriendo express en el puerto 3010');
 });
